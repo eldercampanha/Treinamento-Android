@@ -1,10 +1,16 @@
 package br.com.monitoratec.app;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
@@ -18,23 +24,35 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView txtStatus;
+    private TextView txtStatus;
+    private ImageView mImgVectorial;
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //binding
+        // binding
         txtStatus = (TextView) this.findViewById(R.id.txtStatus);
+        mImgVectorial = (ImageView) this.findViewById(R.id.imgVector);
 
+        // setting date format
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+
+        // declaring retrofit
         final Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .baseUrl(GitHubStatusApi.BASE_URL)
                 .build();
 
+        // starting API
         GitHubStatusApi statusApiImpl = retrofit.create(GitHubStatusApi.class);
 
         statusApiImpl.lastMessage().enqueue(new Callback<Status>() {
@@ -42,13 +60,13 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<Status> call, Response<Status> response) {
                 if (response.isSuccessful()) {
                     Status status = response.body();
-                    updateScreen(status);
-                    Toast.makeText(MainActivity.this, status.status.name(), Toast.LENGTH_LONG).show();
+                    updateScreen(status.type.getColorId(),response.body().body);
+                    Toast.makeText(MainActivity.this, status.type.name(), Toast.LENGTH_LONG).show();
                 } else {
 
                     try {
                         String error = response.errorBody().string();
-                        Toast.makeText(MainActivity.this, error, Toast.LENGTH_LONG).show();
+                        updateScreen(Status.Type.MAJOR.getColorId(), error);
                     } catch (IOException e){
                         Log.e(TAG, e.getMessage());
                     }
@@ -57,14 +75,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Status> call, Throwable t) {
-                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                updateScreen(Status.Type.MAJOR.getColorId(), t.getMessage());
             }
         });
     }
 
-    private void updateScreen(Status status) {
-
-        this.txtStatus.setText(status.status.name());
+    private void updateScreen(int colorRes, String message) {
+        this.txtStatus.setText(message);
+        int color = ContextCompat.getColor(MainActivity.this,colorRes);
+        this.txtStatus.setTextColor(color);
+        DrawableCompat.setTint(mImgVectorial.getDrawable(), color);
     }
 
 }

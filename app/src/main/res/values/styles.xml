@@ -8,9 +8,16 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Text Input Layout theme. -->
     <style name="TextAppearance.App.TextInputLayout" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- Text Input Error Layout theme. -->
+    <style name="TextAppearance.App.TextInputLayoutError" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorMajor</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
 </resources>

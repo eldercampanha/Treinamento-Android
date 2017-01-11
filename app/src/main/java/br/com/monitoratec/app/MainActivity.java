@@ -5,6 +5,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,4 +88,9 @@ public class MainActivity extends AppCompatActivity {
         DrawableCompat.setTint(mImgVectorial.getDrawable(), color);
     }
 
+
+    public void btnLoginClicked(View view) {
+
+
+    }
 }

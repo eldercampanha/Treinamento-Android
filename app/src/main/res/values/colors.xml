@@ -8,4 +8,6 @@
     <color name="colorMinor">#aed581</color>
     <color name="colorGood">#ccff90</color>
 
+    <color name="white"> #FFF</color>
+
 </resources>

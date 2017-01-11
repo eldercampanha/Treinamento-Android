@@ -28,10 +28,56 @@
         android:layout_width="500px"
         android:layout_height="500px"
         android:id="@+id/imgVector"
-        app:srcCompat="@drawable/ic_extension_black_24px"
+        app:srcCompat="@drawable/vecor_image"
         android:layout_above="@+id/txtStatus"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="13dp" />
 
-</RelativeLayout
-    >
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilUsername"
+        android:layout_width="match_parent"
+        android:hint="@string/txt_username"
+        android:layout_below="@id/txtStatus"
+        android:layout_marginTop="24dp"
+        android:layout_height="wrap_content"
+        app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout" >
+
+    <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+           android:inputType="text" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilPassword"
+        android:layout_width="match_parent"
+        android:hint="@string/txt_password"
+        android:layout_below="@id/tilUsername"
+        android:layout_marginTop="8dp"
+        app:passwordToggleEnabled="true"
+        android:layout_height="wrap_content"
+        app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+    <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/white"
+            android:inputType="textPassword" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tilPassword"
+        android:layout_marginTop="16dp"
+        android:text="@string/txt_login"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        android:background="@color/colorPrimaryDark"
+        />
+
+</RelativeLayout>

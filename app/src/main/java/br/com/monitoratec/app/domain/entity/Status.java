@@ -1,7 +1,5 @@
 package br.com.monitoratec.app.domain.entity;
 
-import android.graphics.Color;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
@@ -25,20 +23,25 @@ public class Status {
     public enum Type{
 
         @SerializedName("good")
-        GOOD(R.color.colorGood),
+        GOOD(R.color.colorGood,R.string.txt_loading),
         @SerializedName("minor")
-        MINOR(R.color.colorMinor),
+        MINOR(R.color.colorMinor, R.string.txt_error),
         @SerializedName("major")
-        MAJOR(R.color.colorMajor);
+        MAJOR(R.color.colorMajor, R.string.txt_fail);
 
         private int colorId;
+        private int message;
 
-        Type(int id) {
+        Type(int id, int message) {
             this.colorId =id;
+            this.message = message;
         }
 
         public int getColorId(){
             return colorId;
+        }
+        public int getMessageId(){
+            return message;
         }
     }
 

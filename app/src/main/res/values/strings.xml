@@ -11,6 +11,9 @@
     <string name="txt_login">Login</string>
     <string name="txt_required">Required Field</string>
     <string name="txt_auth">Authentication</string>
+    <string name="txt_loading">Sucess</string>
+    <string name="txt_fail">Something unexpected happened</string>
+    <string name="txt_error">Something unexpected happened</string>
 
     <!-- shared preferences -->
     <string name="sp_file">br.com.monitoratec.app.FILE_PREFERENCES</string>

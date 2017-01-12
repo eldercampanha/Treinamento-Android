@@ -62,4 +62,7 @@ dependencies {
     //ButterKnife
     compile "com.jakewharton:butterknife:${butterKnifeLibVersion}"
     annotationProcessor "com.jakewharton:butterknife-compiler:${butterKnifeLibVersion}"
+
+    // RxBinding (by Jake Wharton)
+    compile 'com.jakewharton.rxbinding:rxbinding:1.0.0'
 }

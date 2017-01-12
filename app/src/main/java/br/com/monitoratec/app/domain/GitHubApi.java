@@ -1,12 +1,12 @@
 package br.com.monitoratec.app.domain;
 
-import br.com.monitoratec.app.domain.GitHubStatusApi;
 import br.com.monitoratec.app.domain.entity.User;
-import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import rx.Observable;
 
 /**
  * Created by elder-dell on 2017-01-11.
@@ -14,16 +14,16 @@ import retrofit2.http.Header;
 
 public interface GitHubApi {
 
-    String BASE_URL = "https://status.github.com/";
+    String BASE_URL = "https://api.github.com/";
 
     // declaring retrofit
     Retrofit RETROFIT = new Retrofit.Builder()
+            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(GitHubStatusApi.BASE_URL)
+            .baseUrl(BASE_URL)
             .build();
 
 
     @GET("user")
-    Call<User> basicAuth(@Header("Authorization") String credential);
-
+    Observable<User> basicAuth(@Header("Authorization") String credential);
 }

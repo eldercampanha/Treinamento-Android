@@ -1,3 +1,7 @@
+plugins {
+    id "me.tatarka.retrolambda" version "3.4.0"
+}
+
 apply plugin: 'com.android.application'
 
 android {
@@ -18,11 +22,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 ext{
     supportLibVersion = '25.1.0'
     retrofitLibVersion = '2.1.0'
+    butterKnifeLibVersion = '8.4.0'
 }
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -35,5 +45,6 @@ dependencies {
     compile "com.squareup.retrofit2:retrofit:${retrofitLibVersion}"
     compile "com.squareup.retrofit2:converter-gson:${retrofitLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
-
+    compile "com.jakewharton:butterknife:${butterKnifeLibVersion}"
+    annotationProcessor "com.jakewharton:butterknife-compiler:${butterKnifeLibVersion}"
 }

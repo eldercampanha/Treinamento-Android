@@ -38,6 +38,7 @@ public final class Util {
             if(editText != null){
 
                 if(TextUtils.isEmpty(editText.getText())){
+
                     isValid = false;
                     field.setErrorEnabled(true);
                     field.setError(context.getString(R.string.txt_required));
@@ -53,5 +54,6 @@ public final class Util {
         }
         return isValid;
     }
+
 
 }

@@ -1,3 +1,5 @@
+// Retrolambida (*)Make sure graddle is updated
+
 plugins {
     id "me.tatarka.retrolambda" version "3.4.0"
 }
@@ -35,16 +37,29 @@ ext{
     butterKnifeLibVersion = '8.4.0'
 }
 dependencies {
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    // Basic
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     testCompile 'junit:junit:4.12'
 
+    // RxJava (by ReactiveX)
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.6'
+
+    // Retrofit
+    compile "com.squareup.retrofit2:adapter-rxjava:${retrofitLibVersion}"
     compile "com.squareup.retrofit2:retrofit:${retrofitLibVersion}"
     compile "com.squareup.retrofit2:converter-gson:${retrofitLibVersion}"
+
+    // Design
     compile "com.android.support:design:${supportLibVersion}"
+
+    //ButterKnife
     compile "com.jakewharton:butterknife:${butterKnifeLibVersion}"
     annotationProcessor "com.jakewharton:butterknife-compiler:${butterKnifeLibVersion}"
 }

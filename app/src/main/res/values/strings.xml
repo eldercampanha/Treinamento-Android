@@ -16,6 +16,6 @@
     <string name="txt_error">Something unexpected happened</string>
 
     <!-- shared preferences -->
-    <string name="sp_file">br.com.monitoratec.app.FILE_PREFERENCES</string>
+    <string name="sp_file_key">br.com.monitoratec.app.FILE_PREFERENCES</string>
     <string name="sp_credential_key" >CREDENTIAL_KEY</string>
 </resources>

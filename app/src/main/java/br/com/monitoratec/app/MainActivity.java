@@ -1,13 +1,13 @@
 package br.com.monitoratec.app;
 
 import android.Manifest;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.MainThread;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
@@ -25,8 +25,8 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import br.com.monitoratec.app.domain.GitHubOAuthApi;
 import br.com.monitoratec.app.domain.GitHubStatusApi;
@@ -39,18 +39,14 @@ import br.com.monitoratec.app.util.Util;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static br.com.monitoratec.app.R.string.sp_credential_key;
-import static br.com.monitoratec.app.R.string.sp_file;
+import static br.com.monitoratec.app.R.string.sp_file_key;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @BindView(R.id.txtStatus)
     TextView txtStatus;
@@ -62,10 +58,15 @@ public class MainActivity extends AppCompatActivity {
     TextInputLayout passwordWrapper;
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private GitHubStatusApi statusApiImpl;
-    private GitHubApi gitHubApi;
-    private SharedPreferences mSharedPreferences;
-    private GitHubOAuthApi gitHubOAuthApi;
+    @Inject
+    GitHubStatusApi statusApiImpl;
+    @Inject
+    GitHubApi gitHubApi;
+    @Inject
+    @Named("secret")
+    SharedPreferences mSharedPreferences;
+    @Inject
+    GitHubOAuthApi gitHubOAuthApi;
 
     @Override
     protected void onResume() {
@@ -93,28 +94,6 @@ public class MainActivity extends AppCompatActivity {
                 updateScreen(status.type);
             }
         });
-//        statusApiImpl.lastMessage().enqueue(new Callback<Status>() {
-//            @Override
-//            public void onResponse(Call<Status> call, Response<Status> response) {
-//                if (response.isSuccessful()) {
-//                    Status status = response.body();
-//                    updateScreen(status.type.getColorId(), response.body().body);
-//                } else {
-//
-//                    try {
-//                        String error = response.errorBody().toString();
-//                        updateScreen(Status.Type.MAJOR.getColorId(), error);
-//                    } catch (Exception e) {
-//                        Log.e(TAG, e.getMessage());
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Status> call, Throwable t) {
-//                updateScreen(Status.Type.MAJOR.getColorId(), t.getMessage());
-//            }
-//        });
     }
 
     private void updateScreen(Status.Type type) {
@@ -133,13 +112,15 @@ public class MainActivity extends AppCompatActivity {
 
         // binding
         ButterKnife.bind(this);
+        getMyAppliation().getDaggerDiComponent().inject(this);
+
 
         // starting API
         statusApiImpl = GitHubStatusApi.RETROFIT.create(GitHubStatusApi.class);
         gitHubApi = GitHubApi.RETROFIT.create(GitHubApi.class);
         gitHubOAuthApi = GitHubOAuthApi.RETROFIT.create(GitHubOAuthApi.class);
 
-        mSharedPreferences = getSharedPreferences(getString(sp_file), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getString(sp_file_key), MODE_PRIVATE);
         RxTextView.textChanges(usernameWrapper.getEditText())
                 .skip(1) // Used to avoid being called in the first time
                 // below code used for adding a delay of 2 seconds

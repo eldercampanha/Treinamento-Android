@@ -20,17 +20,16 @@ public class PreferenceModule {
 
     @Provides
     @Singleton
-    @Named("secret")
     SharedPreferences providesSharedPreferences(Context context) {
         final String fileName = context.getString(R.string.sp_file_key);
         return context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
     }
 
-    @Provides
-    @Singleton
-    @Named("default")
-    SharedPreferences providesSharedPreferencesDefault(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context);
-    }
+//    @Provides
+//    @Singleton
+//    @Named("default")
+//    SharedPreferences providesSharedPreferencesDefault(Context context) {
+//        return PreferenceManager.getDefaultSharedPreferences(context);
+//    }
 
 }

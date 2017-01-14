@@ -1,5 +1,7 @@
 package br.com.monitoratec.app.infraestructure.storage.service;
 
+import java.util.List;
+
 import br.com.monitoratec.app.domain.entity.User;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -26,4 +28,7 @@ public interface GitHubService {
 
     @GET("user")
     Observable<User> basicAuth(@Header("Authorization") String credential);
+
+    @GET("user/followers")
+    Observable<List<User>> followers(@Header("Authorization") String credential);
 }

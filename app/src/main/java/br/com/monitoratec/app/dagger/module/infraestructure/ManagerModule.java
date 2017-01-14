@@ -1,5 +1,7 @@
 package br.com.monitoratec.app.dragger.module.module.infraestructure;
 
+import android.content.SharedPreferences;
+
 import javax.inject.Singleton;
 
 import br.com.monitoratec.app.domain.repository.GitHubOAuthRepository;
@@ -24,8 +26,8 @@ public class ManagerModule {
     @Singleton
     @Provides
     GitHubRepository providesGitHubRepository(
-            GitHubService gitHubService) {
-        return new GitHubManager(gitHubService);
+            GitHubService gitHubService, SharedPreferences sharedPreferences) {
+        return new GitHubManager(gitHubService, sharedPreferences);
     }
 
     @Singleton

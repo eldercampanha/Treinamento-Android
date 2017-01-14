@@ -1,11 +1,8 @@
 package br.com.monitoratec.app.domain.repository;
 
+import java.util.List;
+
 import br.com.monitoratec.app.domain.entity.User;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import retrofit2.http.Header;
 import rx.Observable;
 
 /**
@@ -14,4 +11,6 @@ import rx.Observable;
 
 public interface GitHubRepository {
     Observable<User> getUser(String credential);
+    Observable<List<User>> getFollowers(String credential);
+    void savePreferences(String token);
 }

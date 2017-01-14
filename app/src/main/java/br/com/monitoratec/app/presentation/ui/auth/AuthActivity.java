@@ -23,20 +23,19 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import br.com.monitoratec.app.presentation.base.BaseActivity;
 import br.com.monitoratec.app.R;
-import br.com.monitoratec.app.infraestructure.storage.service.GitHubOAuthService;
 import br.com.monitoratec.app.domain.entity.Status;
 import br.com.monitoratec.app.domain.entity.User;
+import br.com.monitoratec.app.infraestructure.storage.service.GitHubOAuthService;
+import br.com.monitoratec.app.presentation.base.BaseActivity;
 import br.com.monitoratec.app.presentation.helper.AppHelper;
+import br.com.monitoratec.app.presentation.ui.followers.FollowersActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static br.com.monitoratec.app.R.string.sp_credential_key;
-import static br.com.monitoratec.app.R.string.sp_file_key;
 
 public class AuthActivity extends BaseActivity implements AuthContract.View {
 
@@ -52,7 +51,6 @@ public class AuthActivity extends BaseActivity implements AuthContract.View {
     private static final String TAG = AuthActivity.class.getSimpleName();
 
     @Inject
-    @Named("secret")
     SharedPreferences mSharedPreferences;
     @Inject AppHelper appHelper;
     @Inject AuthContract.Presenter mPresenter;
@@ -102,18 +100,12 @@ public class AuthActivity extends BaseActivity implements AuthContract.View {
     public void loginClicked(View view) {
         hideKeyboard();
         if (appHelper.validateRequiredFields(usernameWrapper, passwordWrapper)) {
-            doLogin(view);
+            String username = usernameWrapper.getEditText().getText().toString();
+            String password = passwordWrapper.getEditText().getText().toString();
+            final String credentials = okhttp3.Credentials.basic(username, password);
+
+            mPresenter.callGetUser(credentials);
         }
-    }
-
-
-    private void doLogin(final View view) {
-
-        String username = usernameWrapper.getEditText().getText().toString();
-        String password = passwordWrapper.getEditText().getText().toString();
-        final String credentials = okhttp3.Credentials.basic(username, password);
-
-        mPresenter.callGetUser(credentials);
     }
 
     private void hideKeyboard() {
@@ -124,6 +116,7 @@ public class AuthActivity extends BaseActivity implements AuthContract.View {
         }
     }
 
+    @OnClick(R.id.btn_auth)
     public void btnAuthClicked(View view) {
         hideKeyboard();
 
@@ -214,7 +207,9 @@ public class AuthActivity extends BaseActivity implements AuthContract.View {
                         mSharedPreferences.edit()
                                 .putString(credentialsKey, credential)
                                 .apply(); // using apply because it is sync
-                        Snackbar.make(mImageGitHubVectorial, user.login, Snackbar.LENGTH_LONG).show();
+
+        Intent intent =  new Intent(AuthActivity.this, FollowersActivity.class);
+        startActivity(intent);
     }
 
     @Override

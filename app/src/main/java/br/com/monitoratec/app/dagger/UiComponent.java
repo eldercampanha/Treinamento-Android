@@ -3,6 +3,7 @@ package br.com.monitoratec.app.dagger;
 import br.com.monitoratec.app.dragger.module.module.presentations.PresenterModule;
 import br.com.monitoratec.app.dragger.module.scope.PerActivity;
 import br.com.monitoratec.app.presentation.ui.auth.AuthActivity;
+import br.com.monitoratec.app.presentation.ui.followers.FollowersActivity;
 import dagger.Subcomponent;
 
 /**
@@ -13,4 +14,5 @@ import dagger.Subcomponent;
 @Subcomponent(modules = {PresenterModule.class})
 public interface UiComponent {
     void inject(AuthActivity activity);
+    void inject(FollowersActivity activity);
 }

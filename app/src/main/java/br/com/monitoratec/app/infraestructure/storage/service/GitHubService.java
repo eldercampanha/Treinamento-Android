@@ -1,4 +1,4 @@
-package br.com.monitoratec.app.domain;
+package br.com.monitoratec.app.infraestructure.storage.service;
 
 import br.com.monitoratec.app.domain.entity.User;
 import retrofit2.Retrofit;
@@ -12,7 +12,7 @@ import rx.Observable;
  * Created by elder-dell on 2017-01-11.
  */
 
-public interface GitHubApi {
+public interface GitHubService {
 
     String BASE_URL = "https://api.github.com/";
 

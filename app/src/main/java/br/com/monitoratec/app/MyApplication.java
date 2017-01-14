@@ -2,7 +2,8 @@ package br.com.monitoratec.app;
 
 import android.app.Application;
 
-import br.com.monitoratec.app.dragger.module.ApplicationModule;
+import br.com.monitoratec.app.dragger.module.UiComponent;
+import br.com.monitoratec.app.dragger.module.module.ApplicationModule;
 import br.com.monitoratec.app.dragger.module.DaggerDiComponent;
 import br.com.monitoratec.app.dragger.module.DiComponent;
 
@@ -23,7 +24,9 @@ public class MyApplication extends Application {
                 .build();
     }
 
-    public DiComponent getDaggerDiComponent() {
-        return mDiComponent;
+    public UiComponent getDaggerUiComponent() {
+        return mDiComponent.uiComponent();
     }
+
+
 }

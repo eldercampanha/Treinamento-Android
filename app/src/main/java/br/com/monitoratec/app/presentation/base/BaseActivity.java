@@ -1,8 +1,10 @@
-package br.com.monitoratec.app;
+package br.com.monitoratec.app.presentation.base;
 
 import android.support.v7.app.AppCompatActivity;
 
+import br.com.monitoratec.app.MyApplication;
 import br.com.monitoratec.app.dragger.module.DiComponent;
+import br.com.monitoratec.app.dragger.module.UiComponent;
 
 /**
  * Created by elder-dell on 2017-01-12.
@@ -14,8 +16,8 @@ public abstract class BaseActivity extends AppCompatActivity{
         return (MyApplication) getApplication();
     }
 
-    protected DiComponent getDaggerDiComponent(){
-        return this.getMyAppliation().getDaggerDiComponent();
+    protected UiComponent getDaggerUiComponent(){
+        return this.getMyAppliation().getDaggerUiComponent();
     }
 
 }

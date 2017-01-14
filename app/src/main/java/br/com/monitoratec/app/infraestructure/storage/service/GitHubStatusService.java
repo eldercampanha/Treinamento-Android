@@ -1,4 +1,4 @@
-package br.com.monitoratec.app.domain;
+package br.com.monitoratec.app.infraestructure.storage.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,7 +15,7 @@ import retrofit2.http.GET;
  *
  * Created by falvojr on 1/9/17.
  */
-public interface GitHubStatusApi {
+public interface GitHubStatusService {
 
     String BASE_URL = "https://status.github.com/api/";
 

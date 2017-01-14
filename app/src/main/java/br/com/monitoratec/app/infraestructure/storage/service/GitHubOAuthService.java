@@ -1,4 +1,4 @@
-package br.com.monitoratec.app.domain;
+package br.com.monitoratec.app.infraestructure.storage.service;
 
 import br.com.monitoratec.app.domain.entity.AccessToken;
 import retrofit2.Call;
@@ -12,10 +12,10 @@ import retrofit2.http.POST;
 import rx.Observable;
 
 /**
- * Created by elder-dell on 2017-01-11.
+ * interface retrofit da Github Api Service
  */
 
-public interface GitHubOAuthApi {
+public interface GitHubOAuthService {
     String BASE_URL = "https://github.com/login/oauth/";
 
     // declaring retrofit

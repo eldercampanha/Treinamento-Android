@@ -1,12 +1,9 @@
-package br.com.monitoratec.app.util;
+package br.com.monitoratec.app.presentation.helper;
 
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.widget.EditText;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import br.com.monitoratec.app.R;
 
@@ -14,22 +11,15 @@ import br.com.monitoratec.app.R;
  * Created by elder-dell on 2017-01-11.
  */
 
-public final class Util {
+public final class AppHelper {
 
-    private static final String EMAIL_PATTERN = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"(),:;<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$";
-    private static Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-    private static Matcher matcher;
+    private final Context mContext;
 
-    public static boolean validateEmail(String email) {
-        matcher = pattern.matcher(email);
-        return matcher.matches();
+    public AppHelper(Context context){
+        mContext = context;
     }
 
-    public static boolean validatePassword(String password){
-        return (password.length() > 6) && (password.length() < 15);
-    }
-
-    public static  boolean validateRequiredFields(Context context,TextInputLayout... fields){
+    public boolean validateRequiredFields(TextInputLayout... fields){
 
         boolean isValid = true;
 
@@ -41,7 +31,7 @@ public final class Util {
 
                     isValid = false;
                     field.setErrorEnabled(true);
-                    field.setError(context.getString(R.string.txt_required));
+                    field.setError(mContext.getString(R.string.txt_required));
                 } else {
                     field.setErrorEnabled(false);
                     field.setError(null);

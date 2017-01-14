@@ -6,17 +6,23 @@ package br.com.monitoratec.app.dragger.module;
 
 import javax.inject.Singleton;
 
-import br.com.monitoratec.app.MainActivity;
+import br.com.monitoratec.app.dragger.module.module.infraestructure.ManagerModule;
+import br.com.monitoratec.app.dragger.module.module.infraestructure.NetWorkModule;
+import br.com.monitoratec.app.dragger.module.module.infraestructure.ServiceModule;
+import br.com.monitoratec.app.dragger.module.module.presentations.HelperModule;
+import br.com.monitoratec.app.dragger.module.module.ApplicationModule;
+import br.com.monitoratec.app.dragger.module.module.PreferenceModule;
 import dagger.Component;
-import dagger.Provides;
 
 @Singleton
 @Component(modules = {
         ApplicationModule.class,
+        HelperModule.class,
         PreferenceModule.class,
         NetWorkModule.class,
-        ServiceModule.class
+        ServiceModule.class,
+        ManagerModule.class
 })
 public interface DiComponent {
-    void inject(MainActivity activity);
+    UiComponent uiComponent();
 }

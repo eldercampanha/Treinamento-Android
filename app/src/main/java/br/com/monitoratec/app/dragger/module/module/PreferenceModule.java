@@ -1,4 +1,4 @@
-package br.com.monitoratec.app.dragger.module;
+package br.com.monitoratec.app.dragger.module.module;
 
 import android.content.Context;
 import android.content.SharedPreferences;

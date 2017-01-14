@@ -1,11 +1,11 @@
-package br.com.monitoratec.app.dragger.module;
+package br.com.monitoratec.app.dragger.module.module.infraestructure;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import br.com.monitoratec.app.domain.GitHubApi;
-import br.com.monitoratec.app.domain.GitHubOAuthApi;
-import br.com.monitoratec.app.domain.GitHubStatusApi;
+import br.com.monitoratec.app.infraestructure.storage.service.GitHubService;
+import br.com.monitoratec.app.infraestructure.storage.service.GitHubOAuthService;
+import br.com.monitoratec.app.infraestructure.storage.service.GitHubStatusService;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
@@ -24,23 +24,23 @@ public class ServiceModule {
 
     @Singleton
     @Provides
-    GitHubApi providesGitHub(
+    GitHubService providesGitHub(
             @Named(RETROFIT_GITHUB) Retrofit retrofit) {
-        return retrofit.create(GitHubApi.class);
+        return retrofit.create(GitHubService.class);
     }
 
     @Singleton
     @Provides
-    GitHubStatusApi providesGitHubStatus(
+    GitHubStatusService providesGitHubStatus(
             @Named(RETROFIT_GITHUB_STATUS) Retrofit retrofit) {
-        return retrofit.create(GitHubStatusApi.class);
+        return retrofit.create(GitHubStatusService.class);
     }
 
     @Singleton
     @Provides
-    GitHubOAuthApi providesGitHubOAuth(
+    GitHubOAuthService providesGitHubOAuth(
             @Named(RETROFIT_GITHUB_OAUTH) Retrofit retrofit) {
-        return retrofit.create(GitHubOAuthApi.class);
+        return retrofit.create(GitHubOAuthService.class);
     }
 
 }

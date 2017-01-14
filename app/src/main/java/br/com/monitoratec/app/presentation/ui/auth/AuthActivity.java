@@ -1,7 +1,6 @@
-package br.com.monitoratec.app;
+package br.com.monitoratec.app.presentation.ui.auth;
 
 import android.Manifest;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,8 +12,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,45 +25,37 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import br.com.monitoratec.app.domain.GitHubOAuthApi;
-import br.com.monitoratec.app.domain.GitHubStatusApi;
-import br.com.monitoratec.app.domain.GitHubApi;
-import br.com.monitoratec.app.domain.entity.AccessToken;
+import br.com.monitoratec.app.presentation.base.BaseActivity;
+import br.com.monitoratec.app.R;
+import br.com.monitoratec.app.infraestructure.storage.service.GitHubOAuthService;
 import br.com.monitoratec.app.domain.entity.Status;
 import br.com.monitoratec.app.domain.entity.User;
-import br.com.monitoratec.app.util.MySubscriber;
-import br.com.monitoratec.app.util.Util;
+import br.com.monitoratec.app.presentation.helper.AppHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 import static br.com.monitoratec.app.R.string.sp_credential_key;
 import static br.com.monitoratec.app.R.string.sp_file_key;
 
-public class MainActivity extends BaseActivity {
+public class AuthActivity extends BaseActivity implements AuthContract.View {
 
     @BindView(R.id.txtStatus)
     TextView txtStatus;
     @BindView(R.id.imgVector)
-    ImageView mImgVectorial;
+    ImageView mImageGitHubVectorial;
     @BindView(R.id.tilUsername)
     TextInputLayout usernameWrapper;
     @BindView(R.id.tilPassword)
     TextInputLayout passwordWrapper;
 
-    private static final String TAG = MainActivity.class.getSimpleName();
-    @Inject
-    GitHubStatusApi statusApiImpl;
-    @Inject
-    GitHubApi gitHubApi;
+    private static final String TAG = AuthActivity.class.getSimpleName();
+
     @Inject
     @Named("secret")
     SharedPreferences mSharedPreferences;
-    @Inject
-    GitHubOAuthApi gitHubOAuthApi;
+    @Inject AppHelper appHelper;
+    @Inject AuthContract.Presenter mPresenter;
 
     @Override
     protected void onResume() {
@@ -74,34 +63,15 @@ public class MainActivity extends BaseActivity {
 
         processOAuthRedirectUri(this);
 
-        statusApiImpl.lastMessage()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Status>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, e.getMessage());
-                updateScreen(Status.Type.MAJOR);
-            }
-
-            @Override
-            public void onNext(Status status) {
-                updateScreen(status.type);
-            }
-        });
+        mPresenter.loadStatus();
     }
 
     private void updateScreen(Status.Type type) {
 
         this.txtStatus.setText(getString(type.getMessageId()));
-        int color = ContextCompat.getColor(MainActivity.this, type.getColorId());
+        int color = ContextCompat.getColor(AuthActivity.this, type.getColorId());
         this.txtStatus.setTextColor(color);
-        DrawableCompat.setTint(mImgVectorial.getDrawable(), color);
+        DrawableCompat.setTint(mImageGitHubVectorial.getDrawable(), color);
 
     }
 
@@ -110,24 +80,20 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         // binding
         ButterKnife.bind(this);
-        getMyAppliation().getDaggerDiComponent().inject(this);
+        getMyAppliation().getDaggerUiComponent().inject(this);
 
-
-        // starting API
-        statusApiImpl = GitHubStatusApi.RETROFIT.create(GitHubStatusApi.class);
-        gitHubApi = GitHubApi.RETROFIT.create(GitHubApi.class);
-        gitHubOAuthApi = GitHubOAuthApi.RETROFIT.create(GitHubOAuthApi.class);
-
-        mSharedPreferences = getSharedPreferences(getString(sp_file_key), MODE_PRIVATE);
+        mPresenter.setView(this);
         RxTextView.textChanges(usernameWrapper.getEditText())
                 .skip(1) // Used to avoid being called in the first time
                 // below code used for adding a delay of 2 seconds
                 //.debounce(2, TimeUnit.SECONDS)
                 //.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(text ->{
-                    Util.validateRequiredFields(this,usernameWrapper);
+                    appHelper.validateRequiredFields(usernameWrapper);
                 }
         );
     }
@@ -135,7 +101,7 @@ public class MainActivity extends BaseActivity {
     @OnClick(R.id.btn_login)
     public void loginClicked(View view) {
         hideKeyboard();
-        if (Util.validateRequiredFields(this, usernameWrapper, passwordWrapper)) {
+        if (appHelper.validateRequiredFields(usernameWrapper, passwordWrapper)) {
             doLogin(view);
         }
     }
@@ -147,26 +113,7 @@ public class MainActivity extends BaseActivity {
         String password = passwordWrapper.getEditText().getText().toString();
         final String credentials = okhttp3.Credentials.basic(username, password);
 
-
-        gitHubApi.basicAuth(credentials)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new MySubscriber<User>() {
-                    @Override
-                    public void onNext(User user) {
-                        String credentialsKey = getString(sp_credential_key);
-                        mSharedPreferences.edit()
-                                .putString(credentialsKey, credentials)
-                                .apply(); // using apply because it is sync
-                        Snackbar.make(view, user.login, Snackbar.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    protected void onError(String message) {
-
-                    }
-                });
-
+        mPresenter.callGetUser(credentials);
     }
 
     private void hideKeyboard() {
@@ -180,7 +127,7 @@ public class MainActivity extends BaseActivity {
     public void btnAuthClicked(View view) {
         hideKeyboard();
 
-        final String baseUrl = GitHubOAuthApi.BASE_URL + "authorize";
+        final String baseUrl = GitHubOAuthService.BASE_URL + "authorize";
         final String clientId = getString(R.string.oauth_client_id);
         final String redirectUri = getOAuthRedirectUri();
         final Uri uri = Uri.parse(baseUrl + "?client_id=" + clientId + "&redirect_uri=" + redirectUri);
@@ -192,9 +139,10 @@ public class MainActivity extends BaseActivity {
         return getString(R.string.oauth_schema) + "://" + getString(R.string.oauth_host);
     }
 
-    private void processOAuthRedirectUri(final MainActivity view) {
+    private void processOAuthRedirectUri(final AuthActivity view) {
         // Os intent-filter's permitem a interação com o ACTION_VIEW
         final Uri uri = getIntent().getData();
+
         if (uri != null && uri.toString().startsWith(this.getOAuthRedirectUri())) {
 
             String code = uri.getQueryParameter("code");
@@ -204,27 +152,10 @@ public class MainActivity extends BaseActivity {
                 String clientId = getString(R.string.oauth_client_id);
                 String clientSecret = getString(R.string.oauth_client_secret);
 
-                gitHubOAuthApi.accessToken(clientId, clientSecret, code)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new MySubscriber<AccessToken>() {
-                            @Override
-                            public void onNext(AccessToken accessToken) {
-                                String credentialKey = getString(R.string.sp_credential_key);
-                                mSharedPreferences.edit()
-                                        .putString(credentialKey, accessToken.getAuthCredential())
-                                        .apply();
-                                txtStatus.setText(accessToken.access_token);
-                            }
-
-                            @Override
-                            protected void onError(String message) {
-                                updateScreen(Status.Type.MAJOR);
-                            }
-                        });
+                mPresenter.callAccessToken(clientId,clientSecret,code);
 
             } else if (uri.getQueryParameter("error") != null) {
-                //TODO Tratar erro
+                showError(uri.getQueryParameter("error"));
             }
 
             // Limpar os dados para evitar chamadas múltiplas
@@ -270,5 +201,24 @@ public class MainActivity extends BaseActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    @Override
+    public void onLoadStatusType(Status.Type statusType) {
+        updateScreen(statusType);
+    }
+
+    @Override
+    public void onAuthSuccess(String credential, User user) {
+                        String credentialsKey = getString(sp_credential_key);
+                        mSharedPreferences.edit()
+                                .putString(credentialsKey, credential)
+                                .apply(); // using apply because it is sync
+                        Snackbar.make(mImageGitHubVectorial, user.login, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showError(String message) {
+        Snackbar.make(mImageGitHubVectorial, message, Snackbar.LENGTH_LONG).show();
     }
 }

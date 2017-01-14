@@ -1,4 +1,4 @@
-package br.com.monitoratec.app.dragger.module;
+package br.com.monitoratec.app.dagger;
 
 /**
  * Created by elder-dell on 2017-01-12.

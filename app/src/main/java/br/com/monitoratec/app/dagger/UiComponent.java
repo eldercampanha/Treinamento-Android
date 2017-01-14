@@ -1,4 +1,4 @@
-package br.com.monitoratec.app.dragger.module;
+package br.com.monitoratec.app.dagger;
 
 import br.com.monitoratec.app.dragger.module.module.presentations.PresenterModule;
 import br.com.monitoratec.app.dragger.module.scope.PerActivity;
